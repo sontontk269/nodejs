@@ -1,7 +1,9 @@
 "use strict";
 //ket noi database su dung design pattern (Singleton)
 const { default: mongoose } = require("mongoose");
-const connectString = "mongodb://localhost:27017/shopDEV";
+
+const {db:{host, name, port}} = require('../configs/config.mongodb')
+const connectString =`mongodb://${host}:${port}/${name}`;
 
 const {countConnect} = require("../helpers/check.connect")
 class Database {
@@ -18,9 +20,11 @@ class Database {
 
     mongoose
       .connect(connectString, {
-        maxPoolSize: 50 //
+        maxPoolSize: 50, //
       })
-      .then((_) => console.log("Connected Mongodb Success !!!!", countConnect()))
+      .then((_) =>
+        console.log("Connected Mongodb Success !!!!", countConnect(), connectString)
+      )
       .catch((err) => console.log("Error Connect!!!"));
     }
     
