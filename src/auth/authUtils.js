@@ -7,13 +7,11 @@ const createTokenPair = async ( payload, publicKey, privateKey ) => {
     // payload chứa những thông tin được vận chueyenr từ hệ thống này qua hệ thống khác thông qua token
     //privateKey k luwu vaof db
 
-    const accessToken = await JWT.sign(payload, privateKey, {
-        algorithm: "RS256",
-        expiresIn: "2 days"
+    const accessToken = await JWT.sign(payload, publicKey, {
+      expiresIn: "2 days",
     });
 
     const refreshToken = await JWT.sign(payload, privateKey, {
-      algorithm: "RS256",
       expiresIn: "7 days",
     });
 

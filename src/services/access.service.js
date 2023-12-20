@@ -39,38 +39,46 @@ class AccessService {
       if (newShop) {
         // created privateKey, publicKey
         // privateKey dùng để sign token còn publicKey CHỈ dùng để verify token(lưu vào database, nếu hacker xâm nhập thì chỉ lấy dc publicKey)
-        const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
-          modulusLength: 4096,
-          publicKeyEncoding: {
-            type: "pkcs1",
-            format: "pem",
-            //public key crytography standard
-          },
-          privateKeyEncoding: {
-            type: "pkcs1",
-            format: "pem",
-            //public key crytography standard
-          },
-        });
+        // const { privateKey, publicKey } = crypto.generateKeyPairSync("rsa", {
+        //   modulusLength: 4096,
+        //   publicKeyEncoding: {
+        //     type: "pkcs1",
+        //     format: "pem",
+        //     //public key crytography standard
+        //   },
+        //   privateKeyEncoding: {
+        //     type: "pkcs1",
+        //     format: "pem",
+        //     //public key crytography standard
+        //   },
+        // });
+        //CÁCH KHÁC
+        const privateKey = await crypto.randomBytes(64).toString('hex')
         
+        const publicKey = await crypto.randomBytes(64).toString('hex')
+        
+
+
+
         console.log({ privateKey, publicKey }); // save collection Keystore
        
-        const publicKeyString = await KeyTokenService.createKeyToken({
+        const keyStore = await KeyTokenService.createKeyToken({
           userId: newShop._id,
-          publicKey
+          publicKey,
+          privateKey
         });
 
-        if (!publicKeyString) {
+        if (!keyStore) {
           return {
             code: "xxxx",
-            message: "publicKeyString error",
+            message: "keyStore error",
           };
         }
 
         //CREATED token pair
         const tokens = await createTokenPair(
           {userId: newShop._id, email},
-          publicKeyString, privateKey
+          publicKey, privateKey
         );
         console.log(`Create Token success::`, tokens);
 
